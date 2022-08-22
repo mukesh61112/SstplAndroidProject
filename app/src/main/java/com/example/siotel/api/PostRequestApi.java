@@ -1,5 +1,7 @@
 package com.example.siotel.api;
 
+import com.example.siotel.models.CurrAmountRequestModel;
+import com.example.siotel.models.CurrentRechargeResponse;
 import com.example.siotel.models.HRHDetailsModel;
 import com.example.siotel.models.HouseholdsModel;
 import com.example.siotel.models.HouseholdsDetailsModel;
@@ -7,6 +9,9 @@ import com.example.siotel.models.LoginModel;
 import com.example.siotel.models.LoginResponseModel;
 import com.example.siotel.models.PayModel;
 import com.example.siotel.models.RozarPayResponse;
+import com.example.siotel.models.RzPayStatus;
+import com.example.siotel.models.RzResponse;
+import com.example.siotel.models.RzStatusResponse;
 import com.example.siotel.models.SaveEmail;
 import com.example.siotel.models.Token;
 
@@ -17,6 +22,7 @@ import java.util.List;
 import retrofit2.Call;
 
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -57,7 +63,13 @@ public interface PostRequestApi {
   Call<Integer>getTotalRecharge(@Header("Authorization") String token, @Body SaveEmail saveEmail);
 
   @POST("payments/MeterRechargeApi")
-  Call<RozarPayResponse> getRzPay(@Body PayModel payModel);
+  Call<RzResponse> getRzPay(@Body PayModel payModel);
 
 
+  //http://meters.siotel.in:8000/payments/payment_statusApi
+  @POST("payments/payment_statusApi")
+  Call<RzStatusResponse> getRzPyStatus(@Body RzPayStatus rzPayStatus);
+
+  @POST("balanceViewApi/")
+  Call<CurrentRechargeResponse> getHouseholdCurrentAmount(@Header("Authorization") String token, @Body CurrAmountRequestModel currAmountRequestModel);
 }

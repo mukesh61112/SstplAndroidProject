@@ -40,10 +40,10 @@ public class HouseholdsDetailsAdapter extends RecyclerView.Adapter<HouseholdsDet
 
         if(position==0) {
 
-            holder.metersn.setBackgroundColor(Color.argb(40,40,40,40));
-            holder.cum_eb_kwh.setBackgroundColor(Color.argb(40,40,40,40));
-            holder.balance_amount.setBackgroundColor(Color.argb(40,40,40,40));
-            holder.date.setBackgroundColor(Color.argb(40,40,40,40));
+            holder.metersn.setBackgroundColor(Color.rgb(90,152,232));
+            holder.cum_eb_kwh.setBackgroundColor(Color.rgb(90,152,232));
+            holder.balance_amount.setBackgroundColor(Color.rgb(90,152,232));
+            holder.date.setBackgroundColor(Color.rgb(90,152,232));
         }
 
 

@@ -42,7 +42,10 @@
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_gravity="start"
-          android:background="@color/Beige"
+          app:itemTextColor="@color/black"
+          app:itemIconTint="@color/black"
+
+          android:background="@color/fragmentBGC"
           app:headerLayout="@layout/nav_header"
           android:overScrollMode="never"
           android:scrollbars="none"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Siotel</string>
+    <string name="app_name">Sstpl</string>
     <string name="create_order_title">first</string>
     <string name="action_share">second</string>
     <string name="nav_open" />
@@ -20,4 +20,16 @@
     <string name="history">History</string>
     <string name="balance">Your Balance</string>
     <string name="overview">Overview</string>
+    <string name="apikey">""</string>
+    <string name="refresh">refresh</string>
+    <string name="about_us">About Us</string>
+    <string name="ab_heading"><![CDATA[LoRa is a highly secured wireless technology developed to create the low-power, wide-area networks (LPWANs) required for Internet of Things (IoT) applications. We are the first company who has developed the LoRa network ecosystems end device & network in India. This network will be dedicated IoT applications & devices.]]></string>
+    <string name="ab_vision">" SSTPL will be the indian core for connected cost effective, innovative approaches towards the betterment of society."</string>
+    <string name="ab_features">"  • Long Range \n  • Multi Service Capability \n  • Highly Secured \n  • Low Energy Consumption"</string>
+    <string name="ab_journey">"  • Network Solution and provisioning: sehaj synergy -      LoRanetwork will provide you with the network foundation that will connect your devices to your applications.\n  • Device integration and deployment: sehaj synergy will manufacture your LoRa enable devices.\n  • Solution design: Architect your loT solution on a node-to-applications basis ensuring optimal performance.\n  • Management and support: Monitor, administer and support the solution on an end-to-end basis."</string>
+    <string name="ab_unique">India has not seen too many large-scale IoT solutions, despite having a large ecosystem of solution providers end system integrations. The missing piece is a network that is suited for M2M communications that drives the internet of Things. Over the last few years, loT solutions have been implemented on traditional networks such as 2G, 3G or 4G Also the devices themselves have had to rely on a local power supply and local relay such as a smartphone or an internet box. This has rendered IoT solutions implemented in India largely unsuccessful, both technically and commercially.</string>
+    <string name="about"><![CDATA[ • a startup\n  • team of young telecom & software professionals\n  • developing an ecosystem for the internet of Things.\n  • to bring disruption in the M2M space of india.\n  • to develop low cost end side sensors and devices.\n  • Strong R&D Department in house .]]></string>
+    <string name="cu_call">+91 8890200333 , 9829004447</string>
+    <string name="cu_email">Large Customers: sales@sstpl.net.in  Enquires: marketing@sstpl.net.in  Support: support@sstpl.net.in</string>
+    <string name="ab_location">Sehaj Synergy Technologies Pvt. Ltd. 3rd Floor, J-9/J-7/3, Opp JVVNL Power House,Bhagwan Marg, Swage Farm, Sodala, Jaipur-302019</string>
 </resources>

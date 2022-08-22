@@ -1,5 +1,6 @@
 package com.example.siotel.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -36,15 +37,16 @@ public class  RechargeHisDetailsAdapter extends RecyclerView.Adapter<RechargeHis
         return  mdViewHolder;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RechargeHisDetailsAdapter.MDViewHolder holder, int position) {
 
         if(position==0) {
 
-            holder.metersn.setBackgroundColor(Color.argb(40,40,40,40));
+            holder.metersn.setBackgroundColor(Color.rgb(90,152,232));
 
-            holder.balance_amount.setBackgroundColor(Color.argb(40,40,40,40));
-            holder.date.setBackgroundColor(Color.argb(40,40,40,40));
+            holder.balance_amount.setBackgroundColor(Color.rgb(90,152,232));
+            holder.date.setBackgroundColor(Color.rgb(90,152,232));
         }
 
 
@@ -54,13 +56,12 @@ public class  RechargeHisDetailsAdapter extends RecyclerView.Adapter<RechargeHis
         holder.metersn.setText(meterDetails.getDevid());
 
         holder.balance_amount.setText(meterDetails.getAmount());
-//       // String s=meterDetails.getDate();
-//       // String [] arr=s.split("T");
+        String s=meterDetails.getDate();
+        //String [] arr=s.split("T");
 //        holder.date.setText(arr[0]);
 //        holder.time.setText(arr[1]);
-        String s=meterDetails.getDate();
-        String [] arr=s.split("[T,.]");
-        holder.date.setText(arr[0] +"  "+ arr[1]);
+        String arr[]=s.split("[T.]");
+        holder.date.setText(arr[0]+"  "+arr[1]);
 
 
     }

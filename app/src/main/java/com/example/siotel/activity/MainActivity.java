@@ -11,14 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -32,15 +26,13 @@ import com.example.siotel.R;
 import com.example.siotel.SharedPrefManager;
 import com.example.siotel.api.PostRequestApi;
 import com.example.siotel.connectapi.AllApiConnect;
-import com.example.siotel.fragment.BalanceFragment;
+import com.example.siotel.fragment.AboutUsFragment;
+import com.example.siotel.fragment.ContactFragment;
 import com.example.siotel.fragment.DashboardFragment;
 import com.example.siotel.fragment.HouseholdsFragment;
 import com.example.siotel.fragment.RechargeHistoryFragment;
-import com.example.siotel.fragment.RechargeFragment;
 import com.example.siotel.models.HouseholdsModel;
 import com.example.siotel.models.Token;
-import com.example.siotel.sqlitedatabase.HouseholdDatabase;
-import com.example.siotel.sqlitedatabase.ImageDatabase;
 import com.example.siotel.sqlitedatabase.MyDatabase;
 import com.google.android.material.navigation.NavigationView;
 
@@ -58,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     SharedPrefManager sharedPrefManager;
-    HouseholdDatabase householdDatabase;
+
     MyDatabase myDatabase;
     AllApiConnect allApiConnect;
 
@@ -77,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     Uri imagePath;
     Bitmap imageStore;
     Toolbar toolbar;
-    ImageDatabase database;
+
 
 
     private  static  final int  PIC_IMAGE=100;
@@ -95,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
          viewClick();
          setOnView();
          navigationViewItemSelect();
-         apiCall();
+     //    apiCall();
 
 
 
@@ -111,19 +103,21 @@ public class MainActivity extends AppCompatActivity {
         selectimage = headerView.findViewById(R.id.selectimage);
         show=findViewById(R.id.show);
         profileImage = headerView.findViewById(R.id.imageView);
-        database =new ImageDatabase(this);
+        profileImage.setImageResource(R.drawable.placeholder);
+
         fragmentContainerView=findViewById(R.id.fragmentContainerView);
 
         sharedPrefManager=new SharedPrefManager(getApplicationContext());
         allApiConnect=new AllApiConnect();
 
-        householdDatabase=new HouseholdDatabase(getApplicationContext());
+
         myDatabase=new MyDatabase(getApplicationContext());
 
     }
     public void drawer()
     {
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+        actionBarDrawerToggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.black));
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -162,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void setOnView()
     {
-        Bitmap b = getTheImage();
+        Bitmap b =myDatabase.getUserImage();
         profileImage.setImageBitmap(b);
     }
     @Override
@@ -181,7 +175,16 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.logout:
-               logoutApp();
+                logoutApp();
+                myDatabase.deleteMyDatabase(getApplicationContext());
+                sharedPrefManager.logout();
+                Toast.makeText(MainActivity.this, "User LogOut", Toast.LENGTH_SHORT)
+                        .show();
+                finish();
+//                Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+//                startActivity(intent);
+//                finish();
+
 
                 return true;
         }
@@ -203,24 +206,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-              if(getTheImage()==null) {
-                SQLiteDatabase db = database.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(ImageDatabase.KEY_IMG_URL, byteArray);
-                db.insert(ImageDatabase.TABLE_NAME, null, values);
-                db.close();
-                Bitmap b = getTheImage();
-                profileImage.setImageBitmap(b);
-            }
-            else{
-                SQLiteDatabase db = database.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(ImageDatabase.KEY_IMG_URL, byteArray);
-                db.update(ImageDatabase.TABLE_NAME, values,null,null);
-                db.close();
-                Bitmap b = getTheImage();
-                profileImage.setImageBitmap(b);
-            }
+
+
+                         if(myDatabase.getUserImage()==null) {
+                             myDatabase.addUserImage(byteArray);
+                             Bitmap b = myDatabase.getUserImage();
+                             profileImage.setImageBitmap(b);
+                          }
+                         else{
+                              myDatabase.updateUserImage(byteArray);
+                             Bitmap b = myDatabase.getUserImage();
+                              profileImage.setImageBitmap(b);
+                          }
 
             }
 
@@ -234,21 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public Bitmap getTheImage(){
 
-        SQLiteDatabase db = database.getReadableDatabase();
-        Cursor cursor = (Cursor) db.rawQuery(" SELECT * FROM "+ImageDatabase.TABLE_NAME,null,null);
-        if (cursor.moveToFirst()){
-            @SuppressLint("Range") byte[] imgByte =  cursor.getBlob(cursor.getColumnIndex(ImageDatabase.KEY_IMG_URL));
-            cursor.close();
-            return BitmapFactory.decodeByteArray(imgByte,0,imgByte.length);
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-
-        return null;
-    }
     private void navigationViewItemSelect() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
@@ -257,16 +240,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
 
-                //Checking if the item is in checked state or not, if not make it in checked state
-              /*  if (menuItem.isChecked())
-                    menuItem.setChecked(false);
-                else
-                    menuItem.setChecked(true); */
-
-                // I THINK THAT I NEED EDIT HERE...
-
-
-                //Closing drawer on item click
                 drawerLayout.closeDrawers();
 
 
@@ -293,14 +266,23 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction3.replace(R.id.fragmentContainerView,new HouseholdsFragment());
                         fragmentTransaction3.commit();
                         return  true;
-                    case R.id.balance:
+                    case R.id.about_us:
                         FragmentManager fragmentManager4=getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction4=fragmentManager4.beginTransaction();
                         getSupportFragmentManager().popBackStack();
-                        fragmentTransaction4.replace(R.id.fragmentContainerView,new BalanceFragment());
+                        fragmentTransaction4.replace(R.id.fragmentContainerView,new AboutUsFragment());
 
                         fragmentTransaction4.commit();
                         return  true;
+                    case R.id.contact:
+                        FragmentManager fragmentManager5=getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction5=fragmentManager5.beginTransaction();
+                        getSupportFragmentManager().popBackStack();
+                        fragmentTransaction5.replace(R.id.fragmentContainerView,new ContactFragment());
+
+                        fragmentTransaction5.commit();
+                        return  true;
+
 
                 }
                 return false;
@@ -316,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         String tokenstr="Bearer "+token.getEmail();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -330,12 +312,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Token> call, Response<Token> response) {
                   if(response.isSuccessful())
                   {
-                     myDatabase.deleteMyDatabase(getApplicationContext());
-                     sharedPrefManager.logout();
-                      Toast.makeText(MainActivity.this, "User LogOut", Toast.LENGTH_SHORT)
-                              .show();
-                      Intent intent=getIntent();
-                      finish();
+
 
                   }
             }
@@ -365,56 +342,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void apiCall()
     {
-        allApiConnect.housholdApi(getApplicationContext());
 
-        List<HouseholdsModel> householdlist=myDatabase.getHouseHolds();
 
-        for(int i=0;i<householdlist.size();i++)
-        {
-            allApiConnect.householdDetailsApi(getApplicationContext(),householdlist.get(i).getMetersno());
+            allApiConnect.housholdApi(getApplicationContext());
 
-        }
-        for(int i=0;i<householdlist.size();i++)
-        {
-            allApiConnect.householdRechargeDetailsApi(getApplicationContext(),householdlist.get(i).getMetersno());
-        }
+            List<HouseholdsModel> householdlist = myDatabase.getHouseHolds();
+
+            for (int i = 0; i < householdlist.size(); i++) {
+                allApiConnect.householdDetailsApi(getApplicationContext(), householdlist.get(i).getMetersno());
+
+            }
+//        for(int i=0;i<householdlist.size();i++)
+//        {
+//            allApiConnect.householdRechargeDetailsApi(getApplicationContext(),householdlist.get(i).getMetersno());
+//        }
+
+            allApiConnect.totalRecharge(getApplicationContext());
 
     }
 
 
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PIC_IMAGE && resultCode == Activity.RESULT_OK) {
-
-            imageStore = (Bitmap) data.getExtras().get("data");
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageStore.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-
-
-            if(getTheImage()==null) {
-                SQLiteDatabase db = database.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(ImageDatabase.KEY_IMG_URL, byteArray);
-                db.insert(ImageDatabase.TABLE_NAME, null, values);
-                db.close();
-                Bitmap b = getTheImage();
-                profileImage.setImageBitmap(b);
-            }
-            else{
-                SQLiteDatabase db = database.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(ImageDatabase.KEY_IMG_URL, byteArray);
-                db.update(ImageDatabase.TABLE_NAME, values,null,null);
-                db.close();
-                Bitmap b = getTheImage();
-                profileImage.setImageBitmap(b);
-            }
-
-        }
-    }*/
 }
 
 

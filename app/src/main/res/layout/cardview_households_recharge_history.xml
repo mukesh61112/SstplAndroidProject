@@ -53,7 +53,8 @@
                     android:layout_marginTop="20dp"
                     android:layout_gravity="center_horizontal"
                     android:text="recharge history"
-                    android:textSize="10dp"
+                    android:textSize="8dp"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />

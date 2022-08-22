@@ -44,7 +44,7 @@ public class RechargeHistoryFragHousHoldsAdapter extends RecyclerView.Adapter<Re
         holder.rechargeHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context.getApplicationContext(),"meter no"+devicesModel.getMetersno().toString(),Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context.getApplicationContext(),"meter no"+devicesModel.getMetersno().toString(),Toast.LENGTH_SHORT).show();
                 //  recyclerViewInterface.onItemClick(arrayList.get(position));
 //                Bundle bundle=new Bundle();
 //                transection.replace(R.id.fragmentContainerView, new MeterDetailsFragment());

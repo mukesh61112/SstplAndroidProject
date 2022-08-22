@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".activity.SplashActivity">
 
     <TextView
@@ -13,17 +14,25 @@
         android:layout_width="match_parent"
         android:textSize="30dp"
         android:gravity="center"
-        android:textColor="#7585E1"
+        android:textColor="@color/appcolor"
         android:textStyle="bold"
+
         android:layout_height="wrap_content"
-        android:text="Welcome To SSTPL" />
+        android:text="Welcome To " />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-       android:layout_marginTop="100dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_width="100dp"
+
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
 
         app:srcCompat="@drawable/sstpllogo" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/animation_view"
+        app:lottie_rawRes="@raw/iotani"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
 </LinearLayout>

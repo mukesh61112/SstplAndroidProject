@@ -1,20 +1,20 @@
 package com.example.siotel.models;
 
 public class RozarPayResponse {
-   Response responseObject;
+   RzResponse responseObject;
 
     public RozarPayResponse() {
     }
 
-    public RozarPayResponse(Response response) {
+    public RozarPayResponse(RzResponse response) {
         this.responseObject = response;
     }
 
-    public Response getResponseObject() {
+    public RzResponse getResponseObject() {
         return responseObject;
     }
 
-    public void setResponseObject(Response responseObject) {
+    public void setResponseObject(RzResponse responseObject) {
         this.responseObject = responseObject;
     }
 }

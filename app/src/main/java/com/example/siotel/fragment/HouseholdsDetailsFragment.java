@@ -1,10 +1,14 @@
 package com.example.siotel.fragment;
 
+import static java.time.LocalDateTime.of;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +35,9 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,12 +52,15 @@ public class HouseholdsDetailsFragment extends Fragment{
     List<HouseholdsDetailsModel> arrayList;
     HouseholdsDetailsAdapter householdsDetailsAdapter;
     RecyclerView householdsDetailsRv;
-   SharedPrefManager sharedPrefManager;
-   MyDatabase myDatabase;
 
-    static String meterno="";
+
+   SharedPrefManager sharedPrefManager;
+    MyDatabase myDatabase;
+    static String householdId="";
+
+
     public HouseholdsDetailsFragment(String toString) {
-        meterno=toString;
+        householdId=toString;
     }
 
 
@@ -60,16 +69,40 @@ public class HouseholdsDetailsFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_households_details, container, false);
-        householdsDetailsRv=v.findViewById(R.id.households_details_hori_rv);
-        sharedPrefManager=new SharedPrefManager(getContext());
+
+        findById(v);
 
 
-        //getMetersData();
-        getHouseholdDetailsFromDB(meterno);
+
+        getHouseholdDetailsFromDB(householdId);
 
         return v;
     }
-    private void getMetersData() {
+
+    private void findById(View v)
+    {
+        householdsDetailsRv=v.findViewById(R.id.households_details_hori_rv);
+        sharedPrefManager=new SharedPrefManager(getContext());
+        myDatabase=new MyDatabase(getContext());
+    }
+    private void getHouseholdDetailsFromDB(String meterno)
+    {
+        LinearLayoutManager llm=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        householdsDetailsRv.setLayoutManager(llm);
+        arrayList=new ArrayList<>();
+        arrayList=myDatabase.getHouseholdsDetails(meterno);
+        Collections.reverse(arrayList);
+        List<HouseholdsDetailsModel> dlist2=new ArrayList<>();
+        dlist2.add(new HouseholdsDetailsModel("Household Number","Cum Eb Kwh","Balance","Date andTtime"));
+        dlist2.addAll(arrayList);
+        householdsDetailsAdapter=new HouseholdsDetailsAdapter(dlist2);
+        householdsDetailsRv.setAdapter(householdsDetailsAdapter);
+
+        callHouseholdDetailsApi();
+
+    }
+    private void callHouseholdDetailsApi() {
+
         LinearLayoutManager llm=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         householdsDetailsRv.setLayoutManager(llm);
 
@@ -81,69 +114,94 @@ public class HouseholdsDetailsFragment extends Fragment{
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         PostRequestApi requestApi = retrofit.create(PostRequestApi.class);
-        String url="houseListApi/"+meterno;
+        String url="houseListApi/"+householdId;
       Call<List<HouseholdsDetailsModel>> call = requestApi.getMetersDtl(url,tokenstr);
 
         call.enqueue(new Callback<List<HouseholdsDetailsModel>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NonNull Call<List<HouseholdsDetailsModel>> call, @NonNull Response<List<HouseholdsDetailsModel>> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext()," meter response mila h ",Toast.LENGTH_LONG).show();
-                    Log.v("mhaha"," meter have no error");
-                    List<HouseholdsDetailsModel> dlist1 = response.body();
-                    List<HouseholdsDetailsModel> dlist2=new ArrayList<>();
-                    dlist2.add(new HouseholdsDetailsModel("Household Number","Cum Eb Kwh","Balance","Date and T time"));
 
 
+                    List<HouseholdsDetailsModel> responselist=response.body();
 
-                    for (HouseholdsDetailsModel d : dlist1) {
+                /*    for(HouseholdsDetailsModel d:responselist)
+                    {
+                        myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),
+                                d.getBalance_amount(),d.getDate());
+                    } */
 
+
+                  if(myDatabase.getHouseholdDetailsCount(householdId)==0)
+                    {
+
+                         for(int i=responselist.size()-1;i>=0;i--)
+                         {
+                             HouseholdsDetailsModel d=responselist.get(i);
+                             myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),
+                                                            d.getBalance_amount(),d.getDate());
+                         }
+                    }
+                     else{
+                        List<HouseholdsDetailsModel> beforlist=myDatabase.getHouseholdsDetails(householdId);
+                        int beforlistSize=myDatabase.getHouseholdDetailsCount(householdId);
+                      Collections.reverse(beforlist);
+                        String  beforTimeString=beforlist.get(0).getDate();
+                        String beforTimeArray[]=beforTimeString.split("[-,T,:,.]");
+
+                        LocalDateTime beforDate= of(Integer.parseInt(beforTimeArray[0]),
+                                Integer.parseInt(beforTimeArray[1]),
+                                Integer.parseInt(beforTimeArray[2]),
+                                Integer.parseInt(beforTimeArray[3]),
+                                Integer.parseInt(beforTimeArray[4]),
+                                Integer.parseInt(beforTimeArray[5]));
+
+                        for(int i=responselist.size()-1;i>=0;i--)
+                        {
+                            HouseholdsDetailsModel d=responselist.get(i);
+                             String afterTimeString =d.getDate();
+                             String afterTimeArray[]=afterTimeString.split("[-,T,:,.]");
+                            LocalDateTime afterDate= of(Integer.parseInt(afterTimeArray[0]),
+                                    Integer.parseInt(afterTimeArray[1]),
+                                    Integer.parseInt(afterTimeArray[2]),
+                                    Integer.parseInt(afterTimeArray[3]),
+                                    Integer.parseInt(afterTimeArray[4]),
+                                    Integer.parseInt(afterTimeArray[5]));
+
+                            if(afterDate.isAfter(beforDate))
+                            {
+                                myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),
+                                        d.getBalance_amount(),d.getDate());
+                            }
+
+                        }
 
                     }
-                    List<HouseholdsDetailsModel> merge =new ArrayList<>();
-                    merge.addAll(dlist2);
-                    merge.addAll(dlist1);
-                    arrayList=new ArrayList<>(merge);
-                    householdsDetailsAdapter=new HouseholdsDetailsAdapter(arrayList);
-                    householdsDetailsRv.setAdapter(householdsDetailsAdapter);
+
 
 
                 }
                 else
                 {
-                    Toast.makeText(getContext()," meter details nahi mili ",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext()," household details response not successfull  ",Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<List<HouseholdsDetailsModel>> call, Throwable t) {
+                Toast.makeText(getContext()," please check internet connection ",Toast.LENGTH_SHORT).show();
                 Log.v("merr",t.toString());
             }
         });
 
     }
-    private void getHouseholdDetailsFromDB(String meterno)
-    {
-        LinearLayoutManager llm=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        householdsDetailsRv.setLayoutManager(llm);
 
-        myDatabase=new MyDatabase(getContext());
-        arrayList=new ArrayList<>();
-
-        arrayList=myDatabase.getHouseholdsDetails(meterno);
-
-        List<HouseholdsDetailsModel> dlist2=new ArrayList<>();
-        dlist2.add(new HouseholdsDetailsModel("Household Number","Cum Eb Kwh","Balance","Date andTtime"));
-        dlist2.addAll(arrayList);
-        householdsDetailsAdapter=new HouseholdsDetailsAdapter(dlist2);
-        householdsDetailsRv.setAdapter(householdsDetailsAdapter);
-
-    }
 
 }

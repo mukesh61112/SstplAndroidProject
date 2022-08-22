@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable-v24/ic_baseline_duo_24_custom_input.xml" value="0.1945" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.192" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable-v24/ic_report_focused.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/custom_input.xml" value="0.177" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/custom_login_button.xml" value="0.1765" />
@@ -15,6 +16,7 @@
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_account_balance_wallet.xml" value="0.1605" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_account_balance_wallet_custom_input.xml" value="0.199" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_account_balance_wallet_focused.xml" value="0.199" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_account_box.xml" value="0.2355" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_account_box_white.xml" value="0.1605" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_ap_focusedi.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_api.xml" value="0.1945" />
@@ -22,6 +24,7 @@
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_bar_char_custom_intput.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_bar_char_focusedt.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_baseline_duo_24_focused.xml" value="0.1945" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_contact_support.xml" value="0.2485" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_create.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_create_custom_input.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_create_focused.xml" value="0.1945" />
@@ -35,8 +38,13 @@
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_done_all_custom_input.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_done_all_focused.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_electric_meter.xml" value="0.207" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_electric_meter_custom_input.xml" value="0.2485" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_electric_meter_focused.xml" value="0.2485" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_history_custom_input.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_history_focused.xml" value="0.1945" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_launcher_background.xml" value="0.192" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_phone_custom_input.xml" value="0.2485" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_phone_focused.xml" value="0.2485" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_read_more_custom_input.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_read_more_focused.xml" value="0.1945" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/ic_report_custom_input.xml" value="0.1945" />
@@ -54,11 +62,13 @@
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/tabletextview_border.xml" value="0.1605" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/text_rectangle_bag.xml" value="0.1605" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/drawable/vie_bg.xml" value="0.1" />
-        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_login.xml" value="0.259375" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_login_regi.xml" value="0.14012738853503184" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_rec.xml" value="0.259375" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_recharge.xml" value="0.259375" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/activity_splash.xml" value="0.259375" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_current_recharge.xml" value="0.259375" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_dashboardintro_rv.xml" value="0.259375" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_devices_rv.xml" value="0.4" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_household_current.xml" value="0.259375" />
@@ -66,7 +76,9 @@
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_household_recharge_details_rv.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_households_recharge_history.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/cardview_meter_details_rv.xml" value="0.25729166666666664" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/fragment_about_us.xml" value="0.259375" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/fragment_balance.xml" value="0.259375" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/fragment_contact.xml" value="0.2453125" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/fragment_dashboard.xml" value="0.3263506063947078" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/fragment_devices.xml" value="0.2" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/layout/fragment_history.xml" value="0.259375" />
@@ -85,6 +97,8 @@
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/menu/navigation_menu.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/menu/toolbar_menu.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/menu/toolbar_menu_item_pop_menu.xml" value="0.259375" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2635" />
+        <entry key="..\:/Users/HP/ApkProjects/Siotel/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2645" />
       </map>
     </option>
   </component>

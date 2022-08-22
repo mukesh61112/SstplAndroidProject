@@ -1,25 +1,26 @@
 package com.example.siotel.connectapi;
 
+import static java.time.LocalDateTime.of;
+
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.annotation.RequiresApi;
 
 import com.example.siotel.SharedPrefManager;
-import com.example.siotel.adapters.HouseholdsDetailsAdapter;
-import com.example.siotel.adapters.RechargeHisDetailsAdapter;
 import com.example.siotel.api.PostRequestApi;
 import com.example.siotel.models.HRHDetailsModel;
 import com.example.siotel.models.HouseholdsDetailsModel;
 import com.example.siotel.models.HouseholdsModel;
 import com.example.siotel.models.SaveEmail;
 import com.example.siotel.models.Token;
-import com.example.siotel.sqlitedatabase.HouseholdDatabase;
 import com.example.siotel.sqlitedatabase.MyDatabase;
 
-import java.util.ArrayList;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import retrofit2.Call;
@@ -44,7 +45,7 @@ public class AllApiConnect {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -60,7 +61,7 @@ public class AllApiConnect {
             @Override
             public void onResponse(@NonNull Call<List<HouseholdsModel>> call, @NonNull Response<List<HouseholdsModel>> response) {
                 if (response.isSuccessful()) {
-                    // Toast.makeText(getContext()," response mila h ",Toast.LENGTH_LONG).show();
+
                     Log.v("haha"," have no error");
                     List<HouseholdsModel> dlist = response.body();
                     if(myDatabase.getHouseholdCount()<dlist.size())
@@ -78,13 +79,14 @@ public class AllApiConnect {
                 }
                 else
                 {
-                    Toast.makeText(context," not connect household api  ",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,"  household api response not successfull  ",Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<List<HouseholdsModel>> call, Throwable t) {
+                Toast.makeText(context,"  household api not connect  ",Toast.LENGTH_LONG).show();
                 Log.v("err",t.toString());
             }
         });
@@ -105,7 +107,7 @@ public class AllApiConnect {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -114,52 +116,84 @@ public class AllApiConnect {
         Call<List<HouseholdsDetailsModel>> call = requestApi.getMetersDtl(url,tokenstr);
 
         call.enqueue(new Callback<List<HouseholdsDetailsModel>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NonNull Call<List<HouseholdsDetailsModel>> call, @NonNull Response<List<HouseholdsDetailsModel>> response) {
                 if (response.isSuccessful()) {
-                   // Toast.makeText(context," meter response mila h ",Toast.LENGTH_LONG).show();
-                    Log.v("mhaha"," meter have no error");
 
-                    List<HouseholdsDetailsModel> responselist=response.body();
+                    List<HouseholdsDetailsModel> responselist = response.body();
 
-                    if(myDatabase.getHouseholdDetailsCount(meterno)<responselist.size())
+
+
+
+                /*    for(HouseholdsDetailsModel d:responselist)
                     {
-                        int old=myDatabase.getHouseholdDetailsCount(meterno);
-                        int nw=responselist.size();
-
-                        for(int i=old;i<nw;i++)
-                        {
-
-                           myDatabase.addHouseHoldDetails(responselist.get(i).getMeterSN(),responselist.get(i).getCum_eb_kwh(),
-                                                           responselist.get(i).getBalance_amount(),responselist.get(i).getDate());
-
-                        }
-                    }
-                  /*  List<HouseholdsDetailsModel> dlist1 = response.body();
-
-                    for (HouseholdsDetailsModel d : dlist1) {
-
-                       myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),d.getBalance_amount(),d.getDate());
-                    }
-
-
-                    List<HouseholdsDetailsModel> dlist = response.body();
-                    for (HouseholdsDetailsModel d : dlist) {
-
-                        myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),d.getBalance_amount(),d.getDate());
+                        myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),
+                                d.getBalance_amount(),d.getDate());
                     } */
 
 
-                }
-                else
-                {
-                    Toast.makeText(context," meter details nahi mili ",Toast.LENGTH_LONG).show();
+                    if(myDatabase.getHouseholdDetailsCount(meterno)==0)
+                    {
+//                        int old=myDatabase.getHouseholdDetailsCount(householdId);
+//                        int nw=responselist.size();
+//
+//                        for(int i=old;i<nw;i++)
+//                        {
+//
+//                            myDatabase.addHouseHoldDetails(responselist.get(i).getMeterSN(),responselist.get(i).getCum_eb_kwh(),
+//                                    responselist.get(i).getBalance_amount(),responselist.get(i).getDate());
+//
+//                        }
+//                        householdsDetailsAdapter.notifyDataSetChanged();
+                        for(HouseholdsDetailsModel d:responselist)
+                        {
+                            myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),
+                                    d.getBalance_amount(),d.getDate());
+                        }
+                    }
+                    else{
+                        List<HouseholdsDetailsModel> beforlist=myDatabase.getHouseholdsDetails(meterno);
+                        int beforlistSize=myDatabase.getHouseholdRechargeDetailsCount(meterno);
+
+                        String  beforTimeString=beforlist.get(0).getDate();
+                        String beforTimeArray[]=beforTimeString.split("[-,T,:,.]");
+
+                        LocalDateTime beforDate= of(Integer.parseInt(beforTimeArray[0]),
+                                Integer.parseInt(beforTimeArray[1]),
+                                Integer.parseInt(beforTimeArray[2]),
+                                Integer.parseInt(beforTimeArray[3]),
+                                Integer.parseInt(beforTimeArray[4]),
+                                Integer.parseInt(beforTimeArray[5]));
+
+                        for(HouseholdsDetailsModel d:responselist)
+                        {
+                            String afterTimeString =d.getDate();
+                            String afterTimeArray[]=afterTimeString.split("[-,T,:,.]");
+                            LocalDateTime afterDate= of(Integer.parseInt(afterTimeArray[0]),
+                                    Integer.parseInt(afterTimeArray[1]),
+                                    Integer.parseInt(afterTimeArray[2]),
+                                    Integer.parseInt(afterTimeArray[3]),
+                                    Integer.parseInt(afterTimeArray[4]),
+                                    Integer.parseInt(afterTimeArray[5]));
+
+                            if(afterDate.isAfter(beforDate))
+                            {
+                                myDatabase.addHouseHoldDetails(d.getMeterSN(),d.getCum_eb_kwh(),
+                                        d.getBalance_amount(),d.getDate());
+                            }
+
+                        }
+
+                    }
+
+
                 }
 
             }
-
             @Override
             public void onFailure(Call<List<HouseholdsDetailsModel>> call, Throwable t) {
+                Toast.makeText(context," household details api not connect ",Toast.LENGTH_LONG).show();
                 Log.v("merr",t.toString());
             }
         });
@@ -179,7 +213,7 @@ public class AllApiConnect {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -196,11 +230,9 @@ public class AllApiConnect {
             @Override
             public void onResponse(@NonNull Call<List< HRHDetailsModel>> call, @NonNull Response<List< HRHDetailsModel>> response) {
                 if (response.isSuccessful()) {
-                  //  Toast.makeText(context," kuch recharge details  mili h ",Toast.LENGTH_LONG).show();
+
                     Log.v("mhaha"," meter have no error");
                     List<HRHDetailsModel> responselist = response.body();
-//                    List< HRHDetailsModel> dlist2=new ArrayList<>();
-//                    dlist2.add(new  HRHDetailsModel("House Name"," houshold Number","Date and T time","Amount"));
 
 
                     if(myDatabase.getHouseholdRechargeDetailsCount(meterno)<responselist.size())
@@ -249,7 +281,7 @@ public class AllApiConnect {
         SaveEmail saveEmail=new SaveEmail(email);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -265,10 +297,12 @@ public class AllApiConnect {
                 if (response.isSuccessful()) {
                     int totalrcg=response.body();
 
-//                    totalRecharge.setText(Integer.toString(totalrcg));
-//                    //Toast.makeText(getContext(),totalRechargemodel.getRecharge().toString(),Toast.LENGTH_LONG).show();
 
-                  int getRecharge=myDatabase.getRechargeDB();
+                    if(myDatabase.getRechargeDB()==Integer.MIN_VALUE)
+                          myDatabase.addRecharge(totalrcg);
+                    if(myDatabase.getRechargeDB()!=totalrcg)
+                          myDatabase.updateRecharge(totalrcg);
+
 
 
 

@@ -1,10 +1,14 @@
 package com.example.siotel.fragment;
 
+import static java.time.LocalDateTime.of;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +30,7 @@ import com.example.siotel.models.SaveEmail;
 import com.example.siotel.models.Token;
 import com.example.siotel.sqlitedatabase.MyDatabase;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,40 +46,42 @@ public class RechargHistoryDetailsFragment extends Fragment  {
 
     SharedPrefManager sharedPrefManager;
     MyDatabase myDatabase;
-
-
-  String meterno=null;
+    String meterno=null;
     public RechargHistoryDetailsFragment(String meterno) {
-        // Required empty public constructor
+
         this.meterno=meterno;
     }
-
-
-
     RecyclerView hrhdRV;
-
     List<HRHDetailsModel> arrlist;
-
     RechargeHisDetailsAdapter rhdadapter;
-
-
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view= inflater.inflate(R.layout.fragment_recharg_history_details, container, false);
         hrhdRV=view.findViewById(R.id.households_recharge_hi_de_rv);
 
         sharedPrefManager=new SharedPrefManager(getContext());
         myDatabase=new MyDatabase(getContext());
 
-        //getHouseholdsRechargeHistory();
+
         getHouseholdRechargeHistoryFromDB();
      return  view;
+    }
+    private void getHouseholdRechargeHistoryFromDB()
+    {
+        LinearLayoutManager llm=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        hrhdRV.setLayoutManager(llm);
+        arrlist=new ArrayList<>();
+        arrlist=myDatabase.getHouseholdsRechargeDetails(meterno);
+        List<HRHDetailsModel> dlist2=new ArrayList<>();
+        dlist2.add(new HRHDetailsModel("Household Name","Houshold Number","Date andTtime.ad","Amount"));
+        dlist2.addAll(arrlist);
+        rhdadapter=new RechargeHisDetailsAdapter(dlist2);
+        hrhdRV.setAdapter(rhdadapter);
+
+        getHouseholdsRechargeHistory();
     }
     private void getHouseholdsRechargeHistory() {
         LinearLayoutManager llm=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
@@ -89,7 +96,7 @@ public class RechargHistoryDetailsFragment extends Fragment  {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -103,30 +110,68 @@ public class RechargHistoryDetailsFragment extends Fragment  {
         Call<List< HRHDetailsModel>> call=requestApi.getHouseholdsRechargeHistory(url,tokenstr);
 
         call.enqueue(new Callback<List< HRHDetailsModel>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NonNull Call<List< HRHDetailsModel>> call, @NonNull Response<List< HRHDetailsModel>> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext()," kuch recharge details  mili h ",Toast.LENGTH_LONG).show();
+                   // Toast.makeText(getContext()," kuch recharge details  mili h ",Toast.LENGTH_LONG).show();
                     Log.v("mhaha"," meter have no error");
-                    List<HRHDetailsModel> dlist1 = response.body();
-                    List< HRHDetailsModel> dlist2=new ArrayList<>();
-                    dlist2.add(new  HRHDetailsModel("House Name"," houshold Number","Date and T time","Amount"));
+                  /*  List<HRHDetailsModel> dlist1 = response.body();
+                      String s="";
+                      for(HRHDetailsModel d:dlist1)
+                      {
+                          s+=" "+d.getAmount();
+                          Log.v("date",d.getDate());
+                          myDatabase.addHouseholdRechargeDetails(d.getHouse(),d.getDevid(),d.getDate(),d.getAmount());
+                      }
+                      Toast.makeText(getContext(),s,Toast.LENGTH_LONG).show(); */
+
+                    List<HRHDetailsModel> responselist=response.body();
 
 
 
-                    for ( HRHDetailsModel d : dlist1) {
 
+                    if(myDatabase.getHouseholdRechargeDetailsCount(meterno)==0)
+                    {
+
+                        for(HRHDetailsModel d:responselist)
+                        {
+                            myDatabase.addHouseholdRechargeDetails(d.getHouse(),d.getDevid(),d.getDate(),d.getAmount());
+                        }
+                    }
+                    else{
+                        List<HRHDetailsModel> beforlist=myDatabase.getHouseholdsRechargeDetails(meterno);
+                        int beforlistSize=beforlist.size();
+
+                        String  beforTimeString=beforlist.get(beforlistSize-1).getDate();
+                        String beforTimeArray[]=beforTimeString.split("[-,T,:,.]");
+
+                        LocalDateTime beforDate= of(Integer.parseInt(beforTimeArray[0]),
+                                Integer.parseInt(beforTimeArray[1]),
+                                Integer.parseInt(beforTimeArray[2]),
+                                Integer.parseInt(beforTimeArray[3]),
+                                Integer.parseInt(beforTimeArray[4]),
+                                Integer.parseInt(beforTimeArray[5]));
+
+                        for(HRHDetailsModel d:responselist)
+                        {
+                            String afterTimeString =d.getDate();
+                            String afterTimeArray[]=afterTimeString.split("[-,T,:,.]");
+                            LocalDateTime afterDate= of(Integer.parseInt(afterTimeArray[0]),
+                                    Integer.parseInt(afterTimeArray[1]),
+                                    Integer.parseInt(afterTimeArray[2]),
+                                    Integer.parseInt(afterTimeArray[3]),
+                                    Integer.parseInt(afterTimeArray[4]),
+                                    Integer.parseInt(afterTimeArray[5]));
+
+                            if(afterDate.isAfter(beforDate))
+                            {
+                                myDatabase.addHouseholdRechargeDetails(d.getHouse(),d.getDevid(),d.getDate(),d.getAmount());
+                            }
+
+                        }
 
                     }
-                    List< HRHDetailsModel> merge =new ArrayList<>();
-                    merge.addAll(dlist2);
-                    merge.addAll(dlist1);
-                    arrlist=new ArrayList<>(merge);
-                    rhdadapter=new RechargeHisDetailsAdapter(arrlist);
-                    hrhdRV.setAdapter(rhdadapter);
-
-
-
 
 
                 }
@@ -139,26 +184,13 @@ public class RechargHistoryDetailsFragment extends Fragment  {
 
             @Override
             public void onFailure(Call<List<HRHDetailsModel>> call, Throwable t) {
+                Toast.makeText(getContext()," please check internet connection ",Toast.LENGTH_SHORT).show();
                 Log.v("merr",t.toString());
             }
         });
 
     }
-    private void getHouseholdRechargeHistoryFromDB()
-    {
-        LinearLayoutManager llm=new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        hrhdRV.setLayoutManager(llm);
-        arrlist=new ArrayList<>();
 
-        arrlist=myDatabase.getHouseholdsRechargeDetails(meterno);
-
-        List< HRHDetailsModel> dlist2=new ArrayList<>();
-        dlist2.add(new  HRHDetailsModel("House Name"," houshold Number","Date andTtime","Amount"));
-
-        dlist2.addAll(arrlist);
-        rhdadapter=new RechargeHisDetailsAdapter(dlist2);
-        hrhdRV.setAdapter(rhdadapter);
-    }
 
 
 

@@ -1,6 +1,5 @@
 package com.example.siotel.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,24 +15,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.siotel.R;
 import com.example.siotel.activity.RechargeActivity;
 import com.example.siotel.fragment.HouseholdsDetailsFragment;
-import com.example.siotel.fragment.RechargeFragment;
-import com.example.siotel.models.HhModel;
 import com.example.siotel.models.HouseholdsModel;
 
 import java.util.List;
 
-public class HouseHoldsAdapter extends RecyclerView.Adapter<HouseHoldsAdapter.DevicesViewHolder>   {
+public class HouseHoldsAdapter extends RecyclerView.Adapter<HouseHoldsAdapter.DevicesViewHolder>  {
 
 
     Context context;
     List<HouseholdsModel> arrayList;
 
 
+
     public HouseHoldsAdapter(Context context, List<HouseholdsModel> arrayList) {
         this.context=context;
         this.arrayList = arrayList;
-
     }
+
 
     @NonNull
     @Override
@@ -67,7 +64,7 @@ public class HouseHoldsAdapter extends RecyclerView.Adapter<HouseHoldsAdapter.De
         holder.details.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context.getApplicationContext(),"meter no"+devicesModel.getMetersno().toString(),Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context.getApplicationContext(),"meter no"+devicesModel.getMetersno().toString(),Toast.LENGTH_SHORT).show();
                //  recyclerViewInterface.onItemClick(arrayList.get(position));
 //                Bundle bundle=new Bundle();
 //                transection.replace(R.id.fragmentContainerView, new MeterDetailsFragment());
@@ -82,9 +79,14 @@ public class HouseHoldsAdapter extends RecyclerView.Adapter<HouseHoldsAdapter.De
         holder.recharge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppCompatActivity activity =(AppCompatActivity)view.getContext();
-//                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView,new RechargeFragment(devicesModel.getMetersno()))
-//                        .addToBackStack(null).commit();
+
+
+                 AppCompatActivity activity =(AppCompatActivity)view.getContext();
+//               activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView,new RechargeFragment(devicesModel.getMetersno()))
+//                      .addToBackStack(null).commit();
+                Intent intent=new Intent(activity, RechargeActivity.class);
+                intent.putExtra("Hid",devicesModel.getMetersno());
+                context.startActivity(intent);
 
 
             }
@@ -114,4 +116,8 @@ public class HouseHoldsAdapter extends RecyclerView.Adapter<HouseHoldsAdapter.De
 
 
     }
+//    private void sendHid(String s)
+//    {
+//          houseHoldId.HHid(s);
+//    }
 }

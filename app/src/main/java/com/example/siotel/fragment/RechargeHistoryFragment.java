@@ -1,7 +1,5 @@
 package com.example.siotel.fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,13 +15,11 @@ import android.widget.Toast;
 
 import com.example.siotel.R;
 import com.example.siotel.SharedPrefManager;
-import com.example.siotel.adapters.HouseHoldsAdapter;
 import com.example.siotel.adapters.RechargeHistoryFragHousHoldsAdapter;
 import com.example.siotel.api.PostRequestApi;
 import com.example.siotel.models.HouseholdsModel;
 import com.example.siotel.models.SaveEmail;
 import com.example.siotel.models.Token;
-import com.example.siotel.sqlitedatabase.HouseholdDatabase;
 import com.example.siotel.sqlitedatabase.MyDatabase;
 
 import java.util.List;
@@ -39,9 +35,9 @@ public class RechargeHistoryFragment extends Fragment {
 
     List<HouseholdsModel> arrayList;
     SharedPrefManager sharedPrefManager;
-   RechargeHistoryFragHousHoldsAdapter rhfa;
+    RechargeHistoryFragHousHoldsAdapter rhfa;
     RecyclerView householdsRv;
-    HouseholdDatabase householdDatabase;
+
     MyDatabase myDatabase;
 
     @Override
@@ -50,18 +46,29 @@ public class RechargeHistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_recharge_history, container, false);
 
-           householdsRv=view.findViewById(R.id.household_rv);
-        sharedPrefManager=new SharedPrefManager(getContext());
-        householdDatabase=new HouseholdDatabase(getContext());
-        myDatabase=new MyDatabase(getContext());
 
-
-      //  gethousholdsData();
+        findById(view);
         getHouseholdDataFromDatabase();
+
         return view;
     }
-
+    private void findById(View view)
+    {
+        householdsRv=view.findViewById(R.id.household_rv);
+        sharedPrefManager=new SharedPrefManager(getContext());
+        myDatabase=new MyDatabase(getContext());
+    }
+    private void getHouseholdDataFromDatabase()
+    {
+        GridLayoutManager llm=new GridLayoutManager(getContext(),2);
+        householdsRv.setLayoutManager(llm);
+        arrayList=myDatabase.getHouseHolds();
+        rhfa=new RechargeHistoryFragHousHoldsAdapter(getContext(),arrayList);
+        householdsRv.setAdapter(rhfa);
+    }
     private void gethousholdsData() {
+
+
 
 
         Token token=sharedPrefManager.getUser();
@@ -70,14 +77,13 @@ public class RechargeHistoryFragment extends Fragment {
         SaveEmail saveEmail=new SaveEmail(email);
 
 
-
-        GridLayoutManager llm=new GridLayoutManager(getContext(),2);
-        householdsRv.setLayoutManager(llm);
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://meters.siotel.in:8000/")
+                .baseUrl("http://meters.siotel.in/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
+
+
 
 
 
@@ -88,46 +94,37 @@ public class RechargeHistoryFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<List<HouseholdsModel>> call, @NonNull Response<List<HouseholdsModel>> response) {
                 if (response.isSuccessful()) {
-                    // Toast.makeText(getContext()," response mila h ",Toast.LENGTH_LONG).show();
-                    Log.v("haha"," have no error");
+
                     List<HouseholdsModel> dlist = response.body();
+                    if(myDatabase.getHouseholdCount()<dlist.size())
+                    {
+                        int old=myDatabase.getHouseholdCount();
+                        int nw=dlist.size();
 
-
-                    for (HouseholdsModel d : dlist) {
-
+                        for(int i=old;i<nw;i++)
+                        {
+                            String date=dlist.get(i).getDate();
+                            String arr[]=date.split("[T]");
+                            myDatabase.addHouseHold(dlist.get(i).getHouseholdname(),dlist.get(i).getMetersno(),arr[0]);
+                        }
+                        rhfa.notifyDataSetChanged();
                     }
-
-                    arrayList=dlist;
-                    rhfa=new RechargeHistoryFragHousHoldsAdapter(getContext(),arrayList);
-
-                    householdsRv.setAdapter(rhfa);
-
-
-
                 }
                 else
                 {
-                    Toast.makeText(getContext()," kucn kasjdfkjksdjf ",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"  household api response not successfull  ",Toast.LENGTH_LONG).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<List<HouseholdsModel>> call, Throwable t) {
+                Toast.makeText(getContext()," please check internet connection ",Toast.LENGTH_SHORT).show();
                 Log.v("err",t.toString());
             }
         });
 
-    }
-    private void getHouseholdDataFromDatabase()
-    {
-        GridLayoutManager llm=new GridLayoutManager(getContext(),2);
-        householdsRv.setLayoutManager(llm);
-       // arrayList=householdDatabase.getHouseHolds();
-        arrayList=myDatabase.getHouseHolds();
 
-        rhfa=new RechargeHistoryFragHousHoldsAdapter(getContext(),arrayList);
-
-        householdsRv.setAdapter(rhfa);
     }
+
 }
